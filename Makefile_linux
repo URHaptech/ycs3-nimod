@@ -1,0 +1,15 @@
+CC=g++
+SWIG=swig
+PYTHON_VERSION=2.7
+
+CFLAGS=-I/usr/include/python$(PYTHON_VERSION) -I/usr/lib/python$(PYTHON_VERSION)/site-packages/numpy/core/include -I/usr/include/ni
+LDFLAGS=-lOpenNI -lGL
+
+all:
+	$(SWIG) -c++ -python nimod.i
+	$(CC) -O2 -fPIC -c nimod.cpp nimod_wrap.cxx $(CFLAGS)
+	$(CC) -shared nimod.o nimod_wrap.o -o _nimod.so $(LDFLAGS)
+	cp _nimod.so nimod.py ni.py ../
+clean:
+	rm -rf build
+	rm -f _nimod.so nimod.py nimod_wrap.c nimod_wrap.cxx *.o *~
